@@ -1,2 +1,2 @@
 # NewsBacklight
-A NLP project to know more about the past. 
+This NLP project aims at shedding a new light on present events by analysing newspaper articles from the past.
