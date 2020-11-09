@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/articles_LOC.csv
+/articles_PER.csv
