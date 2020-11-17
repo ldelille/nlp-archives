@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 /articles_LOC.csv
 /articles_PER.csv
+/articles_ORG.csv
+/articles_TIME.csv
