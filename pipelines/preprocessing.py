@@ -34,10 +34,10 @@ class ArticlePreprocessor:
 
     def fully_preprocess(self):
         for t in self.article_df.title:
-            tokens = prepare_text(t)
+            tokens = self.prepare_text(t)
             self.title_tokens.append(tokens)
         for t in self.article_df.text:
-            tokens = prepare_text(t)
+            tokens = self.prepare_text(t)
             self.text_tokens.append(tokens)
 
     def prepare_text(self, text):
