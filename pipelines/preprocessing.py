@@ -22,6 +22,26 @@ my_fr_stop = fr_stop.union({'ce', 'celui', 'cette', 'cet', 'celui-là', 'celui-c
                             'être', 'avoir', 'faire',
                             'autre'})
 
+nlp = spacy.load("fr_core_news_sm")
+
+def prepare_text(text):
+    """
+    Input:
+    ------
+    text: string, raw text
+
+    Output:
+    ------
+    tokens: list of string, tokenized, filtered and lemmatized words from the input text
+    """
+    tokens = tokenize(text)  # split and lower case
+    tokens = [re.sub(r'\b\d+\b', '', token) for token in tokens]  # get rid of digits
+    tokens = [token for token in tokens if len(token) > 4]  # arbitrary length, +get rid of empty strings
+    tokens = [token for token in tokens if token not in my_fr_stop]  # stopwords
+    doc = nlp(' '.join(tokens))  # pave the wave for spacy lemmatizer
+    tokens = [token.lemma_ for token in doc]  # obtain lemmas
+    return tokens
+
 
 def tokenize(text):
     lda_tokens = []
@@ -45,3 +65,20 @@ class ArticlePreprocessor:
 
 def main():
     news_df = pd.read_csv("./articles.csv")
+    title_tokens = []
+    text_tokens = []
+    ## Apply on titles ##
+    for t in news_df.title:
+        tokens = prepare_text(t)
+        title_tokens.append(tokens)
+
+    ## Apply on titles ##
+
+    for t in news_df.text:
+        tokens = prepare_text(t)
+        text_tokens.append(tokens)
+
+    print(news_df.title[:1])
+    print(title_tokens[:1])
+    print(news_df.text[:1][:20])
+    print(text_tokens[0][:10])
