@@ -133,3 +133,4 @@ dmypy.json
 /articles_TIME.csv
 
 .idea
+/pipelines/*.png
