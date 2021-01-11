@@ -1,4 +1,5 @@
 import nltk
+nltk.download('stopwords')
 import spacy
 from nltk.corpus import stopwords
 from nltk import re
@@ -58,7 +59,7 @@ class ArticlePreprocessor:
         tokens = [token.lemma_ for token in doc]  # obtain lemmas
         return tokens
 
-    def tokenize(text):
+    def tokenize(self, text):
         lda_tokens = []
         tokens = parser(text)
         for token in tokens:
@@ -74,5 +75,10 @@ class ArticlePreprocessor:
 
 
 def main():
-    news_df = pd.read_csv("./articles.csv")
+    news_df = pd.read_csv("../articles.csv")
     article_preprocessor = ArticlePreprocessor(news_df)
+    article_preprocessor.fully_preprocess()
+
+
+if __name__ == '__main__':
+    main()
