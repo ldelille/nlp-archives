@@ -50,7 +50,7 @@ class ArticlePreprocessor:
         ------
         tokens: list of string, tokenized, filtered and lemmatized words from the input text
         """
-        tokens = tokenize(text)  # split and lower case
+        tokens = self.tokenize(text)  # split and lower case
         tokens = [re.sub(r'\b\d+\b', '', token) for token in tokens]  # get rid of digits
         tokens = [token for token in tokens if len(token) > 4]  # arbitrary length, +get rid of empty strings
         tokens = [token for token in tokens if token not in my_fr_stop]  # stopwords
