@@ -1,4 +1,6 @@
 import nltk
+from nltk.stem.snowball import FrenchStemmer
+
 nltk.download('stopwords')
 import spacy
 from nltk.corpus import stopwords
@@ -9,6 +11,7 @@ spacy.load('fr')
 from spacy.lang.fr import French
 
 parser = French()
+stemmer = FrenchStemmer()
 
 fr_stop = set(nltk.corpus.stopwords.words('french'))
 # v1 : numbers
@@ -35,13 +38,13 @@ class ArticlePreprocessorStemmer:
 
     def fully_preprocess(self):
         for t in self.article_df.title:
-            tokens = self.prepare_text(t)
+            tokens = self.prepare_text_stem(t)
             self.title_tokens.append(tokens)
         for t in self.article_df.text:
-            tokens = self.prepare_text(t)
+            tokens = self.prepare_text_stem(t)
             self.text_tokens.append(tokens)
 
-    def prepare_text(self, text):
+    def prepare_text_stem(self, text):
         """
         Input:
         ------
@@ -52,17 +55,14 @@ class ArticlePreprocessorStemmer:
         tokens: list of string, tokenized, filtered and lemmatized words from the input text
         """
         tokens = self.tokenize(text)  # split and lower case
-        tokens = [re.sub(r'\b\d+\b', '', token) for token in tokens]  # get rid of digits
-        tokens = [token for token in tokens if len(token) > 4]  # arbitrary length, +get rid of empty strings
+        tokens = [re.sub(r'\b\d+\b', '', token).strip(' ') for token in tokens]  # get rid of digits
+        tokens = [token for token in tokens if len(token) > 3]  # arbitrary length, +get rid of empty strings
         tokens = [token for token in tokens if token not in my_fr_stop]  # stopwords
-        doc = nlp(' '.join(tokens))  # pave the wave for spacy lemmatizer
-        tokens = [token.lemma_ for token in doc]  # obtain lemmas
+        # print("Remaining tokens : ", tokens)
+        tokens = [stemmer.stem(token) for token in tokens]  # obtain lemmas
         return tokens
-    
-    
-    
-    
-    
+
+
 
     def tokenize(self, text):
         lda_tokens = []
@@ -85,6 +85,8 @@ def main():
     news_df = pd.read_excel("articles_labeled.xlsx", sheet_name=0)
     article_preprocessor = ArticlePreprocessorStemmer(news_df)
     article_preprocessor.fully_preprocess()
+    news_df["clean_text"] = [' '.join(article_preprocessor.text_tokens[i]) for i in range(len(article_preprocessor.text_tokens))]
+    news_df["clean_title"] = [' '.join(article_preprocessor.title_tokens[i]) for i in range(len(article_preprocessor.title_tokens))]
 
 
 if __name__ == '__main__':
