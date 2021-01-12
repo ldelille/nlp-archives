@@ -67,11 +67,13 @@ class ArticlePreprocessor:
                 continue
             elif token.like_url:
                 lda_tokens.append('URL')
-            elif token.orth_.startswith('@'):
-                lda_tokens.append('SCREEN_NAME')
+            elif '@' in str(token):
+                lda_tokens += str(token).split('@')
             else:
                 lda_tokens.append(token.lower_)
-        return lda_tokens
+        return [t for t in lda_tokens if len(str(t)) > 0]
+
+
 
 
 def main():
