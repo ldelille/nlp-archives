@@ -37,6 +37,9 @@ class LDA():
             self.topics = self.model.print_topics(num_words=4)
 
 
+
+
+
 def main():
     news_df = pd.read_csv("./articles.csv")
     article_preprocessor = ArticlePreprocessor(news_df)
