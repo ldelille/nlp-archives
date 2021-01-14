@@ -21,39 +21,39 @@ from random import choices
 
 # Kmeans and corresponding tfidf
 
-with open('tfidf_vectorizer_vocab_LOC', 'rb') as file:
+with open('models/tfidf_vectorizer_vocab_LOC', 'rb') as file:
     tfidf_vectorizer_vocab_LOC = pickle.load(file)
 
-with open('kmeans_vocab_LOC', 'rb') as file:
+with open('models/kmeans_vocab_LOC', 'rb') as file:
     kmeans_vocab_LOC = pickle.load(file)
 
-with open('tfidf_vectorizer_base', 'rb') as file:
+with open('models/tfidf_vectorizer_base', 'rb') as file:
     tfidf_vectorizer_base = pickle.load(file)
 
-with open('tfidf_vectorizer_vocab', 'rb') as file:
+with open('models/tfidf_vectorizer_vocab', 'rb') as file:
     tfidf_vectorizer_vocab = pickle.load(file)
 
 # Load sklearn tfidf pipelines 
 
-with open('best_topic_lr_basic_vocab', 'rb') as file:
+with open('models/best_topic_lr_basic_vocab', 'rb') as file:
     best_topic_lr_basic_vocab = pickle.load(file)
 
-with open('best_topic_lr_basic_vocab_l2', 'rb') as file:
+with open('models/best_topic_lr_basic_vocab_l2', 'rb') as file:
     best_topic_lr_basic_vocab_l2 = pickle.load(file)
     
-with open('best_topic_rf_basic_vocab', 'rb') as file:
+with open('models/best_topic_rf_basic_vocab', 'rb') as file:
     best_topic_rf_basic_vocab = pickle.load(file)
 
-with open('best_geo_rf_entity_vocab', 'rb') as file:
+with open('models/best_geo_rf_entity_vocab', 'rb') as file:
     best_geo_rf_entity_vocab = pickle.load(file)
 
     
 # topic codes
 
-with open('geo_code_dic', 'rb') as file:
+with open('models/geo_code_dic', 'rb') as file:
     geo_code_dic = pickle.load(file)
     
-with open('topic_code_dic', 'rb') as file:
+with open('models/topic_code_dic', 'rb') as file:
     topic_code_dic = pickle.load(file)
     
 print(geo_code_dic)
