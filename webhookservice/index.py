@@ -3,6 +3,7 @@ import os
 import dialogflow
 import requests
 import json
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -15,8 +16,9 @@ def results():
     req = request.get_json(force=True)
 
     action = req.get('queryResult').get('action')
-
-    return {'fulfillmentText': 'This is a response from webhook.'}
+    labeled_df = pd.read_csv("../labeled_articles_clean.csv")
+    print(    labeled_df.clean_title[0])
+    return {'fulfillmentText': 'Nous vous recommandons cet article :'+ labeled_df.clean_title[0]}
 
 # route for webhook
 @app.route('/webhook', methods=['GET', 'POST'])
