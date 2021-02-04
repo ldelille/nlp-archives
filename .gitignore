@@ -153,3 +153,4 @@ dmypy.json
 /models/tfidf_vectorizer_vocab_LOC
 /models/tfidf_vectorizer_vocab_loc_per
 /models/topic_code_dic
+/reco_models/
