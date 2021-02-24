@@ -22,7 +22,7 @@ from nltk.stem.snowball import FrenchStemmer  # already something
 
 stemmer = FrenchStemmer()
 
-spacy.load('fr')
+spacy.load('fr_core_news_sm')
 from spacy.lang.fr import French
 
 parser = French()
