@@ -50,6 +50,7 @@ class RecoArticle:
                                               'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize',
                                               'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'cent'})
         self.parser = French()
+        self.stemmer = FrenchStemmer()
         self.utils = dict()
         self.embed_list = []
         self.titles_reco = []
@@ -84,7 +85,7 @@ class RecoArticle:
         tokens = [re.sub(r'\b\d+\b', '', token).strip(' ') for token in tokens]  # get rid of digits
         tokens = [token for token in tokens if len(token) > 3]  # arbitrary length, +get rid of empty strings
         tokens = [token for token in tokens if token not in self.my_fr_stop]  # stopwords
-        tokens = [stemmer.stem(token) for token in tokens]  # obtain lemmas
+        tokens = [self.stemmer.stem(token) for token in tokens]  # obtain lemmas
         return tokens
 
     def preprocess(self, news_df):
@@ -95,18 +96,14 @@ class RecoArticle:
         text_tokens = []
 
         ## Apply on titles ##
-
-        for t in news_df.title:
-            if type(t) != 'str':
-                t = ''
+        print("news_df", news_df)
+        for t in news_df['title']:
             tokens = self.prepare_text_stem(t)
             title_tokens.append(tokens)
 
         ## Apply on bodies ##
 
         for t in news_df.text:
-            if type(t) != 'str':
-                t = ''
             tokens = self.prepare_text_stem(t)
             text_tokens.append(tokens)
 
@@ -166,7 +163,6 @@ class RecoArticle:
         return i_closest
 
     def load_models(self):
-        stemmer = FrenchStemmer()
         spacy.load('fr_core_news_sm')
 
         nlp = spacy.load("fr_core_news_sm")
