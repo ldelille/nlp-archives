@@ -15,10 +15,11 @@ def index():
 def results():
     req = request.get_json(force=True)
 
-    action = req.get('queryResult').get('action')
+    article_number = req.get('queryResult').get('parameters').get('number-integer')
+    print(article_number)
     labeled_df = pd.read_csv("../labeled_articles_clean.csv")
     print(    labeled_df.clean_title[0])
-    return {'fulfillmentText': 'Nous vous recommandons cet article :'+ labeled_df.clean_title[0]}
+    return {'fulfillmentText': 'Nous vous recommandons :'+ labeled_df.clean_title[0]+ ' à partir de l\'article '+ str(article_number)}
 
 # route for webhook
 @app.route('/webhook', methods=['GET', 'POST'])
