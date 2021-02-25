@@ -33,24 +33,32 @@ import re
 
 
 class RecoArticle:
-    def __init__(self, id, url):
+    def __init__(self, id, url=None):
         self.id = id
         self.url = url
         self.fr_stop = set(stopwords.words('french'))
-        self.my_fr_stop = fr_stop.union({'ce', 'celui', 'cette', 'cet', 'celui-là', 'celui-ci',
-                                         'le', 'la', 'les', 'de', 'des', 'du',
-                                         'mais', 'où', 'et', 'donc', 'or', 'ni', 'car', 'depuis', 'quand', 'que', 'qui',
-                                         'quoi',
-                                         'ainsi', 'alors', 'avant', 'après', 'comme',
-                                         'être', 'avoir', 'faire',
-                                         'autre'},
-                                        {'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix',
-                                         'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize',
-                                         'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'cent'})
+        self.my_fr_stop = self.fr_stop.union({'ce', 'celui', 'cette', 'cet', 'celui-là', 'celui-ci',
+                                              'le', 'la', 'les', 'de', 'des', 'du',
+                                              'mais', 'où', 'et', 'donc', 'or', 'ni', 'car', 'depuis', 'quand', 'que',
+                                              'qui',
+                                              'quoi',
+                                              'ainsi', 'alors', 'avant', 'après', 'comme',
+                                              'être', 'avoir', 'faire',
+                                              'autre'},
+                                             {'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
+                                              'dix',
+                                              'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize',
+                                              'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'cent'})
+        self.parser = French()
+        self.utils = dict()
+        self.embed_list = []
+        self.titles_reco = []
+        self.texts_reco = []
+        self.lemonde_df = pd.read_csv("../lemonde_ready.csv")
 
     def tokenize(self, text):
         lda_tokens = []
-        tokens = parser(text)
+        tokens = self.parser(text)
         for token in tokens:
             if token.orth_.isspace():
                 continue
@@ -83,14 +91,28 @@ class RecoArticle:
         """
         news_df must be a dataframe with text and title columns
         """
+        title_tokens = []
+        text_tokens = []
 
-        clean_title = self.prepare_text_stem(news_df['title'].iloc[0])
+        ## Apply on titles ##
 
-        clean_text = self.prepare_text_stem(news_df['text'].iloc[0])
+        for t in news_df.title:
+            if type(t) != 'str':
+                t = ''
+            tokens = self.prepare_text_stem(t)
+            title_tokens.append(tokens)
+
+        ## Apply on bodies ##
+
+        for t in news_df.text:
+            if type(t) != 'str':
+                t = ''
+            tokens = self.prepare_text_stem(t)
+            text_tokens.append(tokens)
 
         # save the preprocessed text
-        news_df["clean_text"] = clean_text
-        news_df["clean_title"] = clean_title
+        news_df["clean_text"] = [' '.join(text_tokens[i]) for i in range(len(text_tokens))]
+        news_df["clean_title"] = [' '.join(title_tokens[i]) for i in range(len(title_tokens))]
 
         return news_df
 
@@ -143,33 +165,28 @@ class RecoArticle:
         # print("\nCosine similarity : %1.3f" %(1-np.ravel(Dist)[np.argmin(Dist)]))
         return i_closest
 
-    def launch_reco(self):
+    def load_models(self):
         stemmer = FrenchStemmer()
         spacy.load('fr_core_news_sm')
-        parser = French()
 
         nlp = spacy.load("fr_core_news_sm")
         model = ft.load_model('../pipelines/cc.fr.300.bin')  # Pré-requis : installation de fasttext / cc.fr.300.bin
-        sample_df = pd.read_excel("../sample_articles.xlsx")
-        lemonde_df = pd.read_csv("../lemonde_ready.csv")  # one level above current folder
+        sample_df = pd.read_excel("../sample_articles.xlsx")# one level above current folder
         with open('../tfidf_vectorizer_base', 'rb') as handle:  # tfidf model
             tfidf_vectorizer = pickle.load(handle)
-        utils = dict()
         for n in [4, 8, 12]:
-            utils[n] = dict()
-            utils[n]["embedding"] = np.loadtxt("../E_" + str(n) + "_leMonde_reduced.txt")
-            utils[n]["std_scaler"] = load("../std_scaler_" + str(n) + ".joblib")
-            utils[n]["pca"] = load("../pca_" + str(n) + ".joblib")
+            self.utils[n] = dict()
+            self.utils[n]["embedding"] = np.loadtxt("../E_" + str(n) + "_leMonde_reduced.txt")
+            self.utils[n]["std_scaler"] = load("../std_scaler_" + str(n) + ".joblib")
+            self.utils[n]["pca"] = load("../pca_" + str(n) + ".joblib")
 
-        sample_df = self.preprocess(sample_df.iloc([[self.id]]))
+        sample_df = self.preprocess(sample_df)
 
-        reco_set = set()
+
 
         for n in [4, 8, 12]:
-            # load embedding, standard scaler and PCA objects
-            E_n_reduced = utils[n]["embedding"]
-            Std = utils[n]["std_scaler"]
-            pca = utils[n]["pca"]
+            Std = self.utils[n]["std_scaler"]
+            pca = self.utils[n]["pca"]
             # réduction de E_sample
             E_sample_n = self.embed_top_n(sample_df, tfidf_vectorizer, n, model)
             E_sample_n_df = pd.DataFrame(E_sample_n)  # transformation en DataFrame
@@ -177,13 +194,21 @@ class RecoArticle:
             E_sample_n_reduced = pca.transform(E_sample_n_df)
             # back to numpy arrays
             E_sample_n_reduced = np.array(E_sample_n_reduced)
+            self.embed_list.append(E_sample_n_reduced)
             # Reco :  Sample articles + Archive articles
-            i_closest = find_closest(E_sample_n_reduced[0, :], E_n_reduced)
-            reco_set[0].add(i_closest)
 
-            print("\n\n    >>> Input Article : ", sample_df.title[0])
-            if type(sample_df.text) == 'str':
-                print(sample_df.text[0][:500])
-            for i_closest in list(reco_sets[0]):
-                print("\n Reco --- ", lemonde_df.title[i_closest])
-                print(lemonde_df.text[i_closest][:500])
+    def launch_reco(self):
+        reco_set = set()
+        for embed, n in zip(self.embed_list, [4, 8, 12]):
+            i_closest = self.find_closest(embed[self.id, :], self.utils[n]["embedding"])
+            reco_set.add(i_closest)
+        for i_closest in reco_set:
+            self.titles_reco.append(self.lemonde_df.title[i_closest])
+            self.texts_reco.append(self.lemonde_df.text[i_closest][:])
+
+
+if __name__ == '__main__':
+    test_article = RecoArticle(2)
+    test_article.load_models()
+    test_article.launch_reco()
+    print(test_article.titles_reco)
