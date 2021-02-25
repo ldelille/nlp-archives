@@ -33,9 +33,7 @@ import re
 
 
 class RecoArticle:
-    def __init__(self, id, url=None):
-        self.id = id
-        self.url = url
+    def __init__(self):
         self.fr_stop = set(stopwords.words('french'))
         self.my_fr_stop = self.fr_stop.union({'ce', 'celui', 'cette', 'cet', 'celui-là', 'celui-ci',
                                               'le', 'la', 'les', 'de', 'des', 'du',
@@ -53,8 +51,6 @@ class RecoArticle:
         self.stemmer = FrenchStemmer()
         self.utils = dict()
         self.embed_list = []
-        self.titles_reco = []
-        self.texts_reco = []
         self.lemonde_df = pd.read_csv("../lemonde_ready.csv")
 
     def tokenize(self, text):
@@ -166,7 +162,7 @@ class RecoArticle:
 
         nlp = spacy.load("fr_core_news_sm")
         model = ft.load_model('../pipelines/cc.fr.300.bin')  # Pré-requis : installation de fasttext / cc.fr.300.bin
-        sample_df = pd.read_excel("../sample_articles.xlsx")# one level above current folder
+        sample_df = pd.read_excel("../sample_articles.xlsx")  # one level above current folder
         with open('../tfidf_vectorizer_base', 'rb') as handle:  # tfidf model
             tfidf_vectorizer = pickle.load(handle)
         for n in [4, 8, 12]:
@@ -176,8 +172,6 @@ class RecoArticle:
             self.utils[n]["pca"] = load("../pca_" + str(n) + ".joblib")
 
         sample_df = self.preprocess(sample_df)
-
-
 
         for n in [4, 8, 12]:
             Std = self.utils[n]["std_scaler"]
@@ -192,17 +186,25 @@ class RecoArticle:
             self.embed_list.append(E_sample_n_reduced)
             # Reco :  Sample articles + Archive articles
 
-    def launch_reco(self):
+    def launch_reco(self, article_id, only_titles_needed=True):
         reco_set = set()
+        titles_reco = []
+        texts_reco = []
         for embed, n in zip(self.embed_list, [4, 8, 12]):
-            i_closest = self.find_closest(embed[self.id, :], self.utils[n]["embedding"])
+            i_closest = self.find_closest(embed[article_id, :], self.utils[n]["embedding"])
             reco_set.add(i_closest)
         for i_closest in reco_set:
-            self.titles_reco.append(self.lemonde_df.title[i_closest])
-            self.texts_reco.append(self.lemonde_df.text[i_closest][:])
+            titles_reco.append(self.lemonde_df.title[i_closest])
+            texts_reco.append(self.lemonde_df.text[i_closest][:])
+        if only_titles_needed:
+            return titles_reco
+        else:
+            return titles_reco, texts_reco
 
 
-if __name__ == '__main__':
-    test_article = RecoArticle(3)
-    test_article.load_models()
-    test_article.launch_reco()
+# if __name__ == '__main__':
+#     test_article = RecoArticle()
+#     test_article.load_models()
+#     print(test_article.launch_reco(3))
+#     print(test_article.launch_reco(2))
+
