@@ -96,7 +96,6 @@ class RecoArticle:
         text_tokens = []
 
         ## Apply on titles ##
-        print("news_df", news_df)
         for t in news_df['title']:
             tokens = self.prepare_text_stem(t)
             title_tokens.append(tokens)
@@ -204,7 +203,6 @@ class RecoArticle:
 
 
 if __name__ == '__main__':
-    test_article = RecoArticle(2)
+    test_article = RecoArticle(3)
     test_article.load_models()
     test_article.launch_reco()
-    print(test_article.titles_reco)
