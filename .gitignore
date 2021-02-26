@@ -64,6 +64,7 @@ db.sqlite3-journal
 # Flask stuff:
 instance/
 .webassets-cache
+webhookservice/.flaskenv
 
 # Scrapy stuff:
 .scrapy
@@ -156,3 +157,16 @@ dmypy.json
 /reco_models/
 /pipelines/cc.fr.300.bin
 /pipelines/cc.fr.300.bin.gz
+/lemonde_ready.csv
+/E_4_leMonde_reduced.txt
+/E_8_leMonde_reduced.txt
+/E_12_leMonde_reduced.txt
+/lemonde.csv
+/pca_4.joblib
+/pca_8.joblib
+/pca_12.joblib
+/std_scaler_4.joblib
+/std_scaler_8.joblib
+/std_scaler_12.joblib
+/tfidf_vectorizer_base
+/~$sample_articles.xlsx
