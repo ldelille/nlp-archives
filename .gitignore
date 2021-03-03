@@ -170,3 +170,7 @@ dmypy.json
 /std_scaler_12.joblib
 /tfidf_vectorizer_base
 /~$sample_articles.xlsx
+
+
+.DS_Store
+
