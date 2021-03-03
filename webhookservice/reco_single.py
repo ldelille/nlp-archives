@@ -160,7 +160,6 @@ class RecoArticle:
     def load_models(self):
         spacy.load('fr_core_news_sm')
 
-        nlp = spacy.load("fr_core_news_sm")
         model = ft.load_model('../pipelines/cc.fr.300.bin')  # Pré-requis : installation de fasttext / cc.fr.300.bin
         sample_df = pd.read_excel("../sample_articles.xlsx")  # one level above current folder
         with open('../tfidf_vectorizer_base', 'rb') as handle:  # tfidf model
@@ -186,7 +185,7 @@ class RecoArticle:
             self.embed_list.append(E_sample_n_reduced)
             # Reco :  Sample articles + Archive articles
 
-    def launch_reco(self, article_id, only_titles_needed=True):
+    def launch_reco_from_id(self, article_id, only_titles_needed=True):
         reco_set = set()
         titles_reco = []
         texts_reco = []
@@ -205,6 +204,6 @@ class RecoArticle:
 # if __name__ == '__main__':
 #     test_article = RecoArticle()
 #     test_article.load_models()
-#     print(test_article.launch_reco(3))
-#     print(test_article.launch_reco(2))
+#     print(test_article.launch_reco_from_id(3))
+#     print(test_article.launch_reco_from_id(2))
 
