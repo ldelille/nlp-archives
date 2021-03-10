@@ -8,7 +8,7 @@ import pandas as pd
 app = Flask(__name__)
 
 from reco_single import RecoArticle
-from scraping.crawler_helper import launch_spider
+
 
 @app.route('/')
 def index():
@@ -22,7 +22,7 @@ def results():
     article_url = req.get('queryResult').get('parameters').get('url')
     print(f"detected article number{article_number} as an input, launching reco...")
 
-    print(launch_spider(article_url))
+    # print(launch_spider(article_url))
 
     return {
         'fulfillmentText': 'Nous vous recommandons :' + test_article.launch_reco_from_id(int(article_number))[
@@ -35,6 +35,22 @@ def results():
 def webhook():
     # return response
     return make_response(jsonify(results()))
+
+@app.route('/scraping', methods=['GET', 'POST'])
+def launch_scraping():
+    req = request.get_json(force=True)
+    article_url = req.get('queryResult').get('parameters').get('url')
+    print(f"detected article number{article_url} as an input, launching scraping...")
+    print(article_url)
+    print(type(article_url))
+    params = {
+        'spider_name': 'lemonde_single',
+        'url': str(article_url)
+    }
+    response = requests.get('http://localhost:9080/crawl.json', params)
+    data = json.loads(response.text)
+    print(data)
+    return data
 
 
 if __name__ == "__main__":

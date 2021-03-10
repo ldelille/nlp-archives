@@ -152,9 +152,7 @@ class RecoArticle:
 
     def find_closest(self, M1, M2, metric='cosine'):
         Dist = cdist(M1.reshape(1, -1), M2, metric=metric)
-        # print(Dist.shape)
         i_closest = np.argmin(Dist)
-        # print("\nCosine similarity : %1.3f" %(1-np.ravel(Dist)[np.argmin(Dist)]))
         return i_closest
 
     def load_models(self):
@@ -200,10 +198,24 @@ class RecoArticle:
         else:
             return titles_reco, texts_reco
 
+    # def launch_reco_from_url(self, article_content, only_titles_needed=True):
+    #     reco_set = set()
+    #
+    #     titles_reco = []
+    #     texts_reco = []
+    #     for embed, n in zip(self.embed_list, [4, 8, 12]):
+    #         i_closest = self.find_closest(embed[article_id, :], self.utils[n]["embedding"])
+    #         reco_set.add(i_closest)
+    #     for i_closest in reco_set:
+    #         titles_reco.append(self.lemonde_df.title[i_closest])
+    #         texts_reco.append(self.lemonde_df.text[i_closest][:])
+    #     if only_titles_needed:
+    #         return titles_reco
+    #     else:
+    #         return titles_reco, texts_reco
 
 # if __name__ == '__main__':
 #     test_article = RecoArticle()
 #     test_article.load_models()
 #     print(test_article.launch_reco_from_id(3))
 #     print(test_article.launch_reco_from_id(2))
-
