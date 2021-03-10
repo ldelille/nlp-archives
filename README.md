@@ -67,9 +67,15 @@ __Recommandation scripts__ __TO UPDATE__
 
 * `text_preprocessing.py` : minimal preprocessing needed to run the recommandation pipeline
 
-* `sim_fasttest.py` : script to train and save embeddings and models for the recommandation pipeline 
+* `sim_fasttest.py` : script to train and save embeddings and models for the recommandation pipeline (build pipeline v1: tfidf learned on Ouest France articles, reco on Le Monde articles, pretrained fasttext embedding 300d)
 
-* `reco_sim_fasttext.py` : script to actually run the recommandation pipeline.
+* `build_pipeline_1.py`: v2 --> tfidf learnt on Le Monde + Ouest France articles, reco Le Monde + Ouest France articles
+
+* `reco_sim_fasttext.py` : script to actually run the recommandation pipeline (v2)
+
+* `build_pipeline_1bis.py`: v3 --> finetuning of fasttext embedding on Le Monde + Ouest France articles
+
+* `reco_sim_fasttext_finetuned.py` : script to actually run the recommandation pipeline (v3)
 
 
 __Webhook service__ CONTENT TO ADD
