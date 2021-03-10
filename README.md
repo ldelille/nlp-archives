@@ -63,7 +63,7 @@ __First pipelines__
 
 * `reco_test.py`
 
-__Recommandation scripts__ __TO UPDATE__
+__Recommandation scripts__ 
 
 * `text_preprocessing.py` : minimal preprocessing needed to run the recommandation pipeline
 
