@@ -9,7 +9,7 @@ const getSimilarArticle = () => {
         })
 
         var options = {
-            hostname: '521a02e992b8.ngrok.io',
+            hostname: '40a09824b447.ngrok.io',
             port: 443,
             path: '/webhook',
             method: 'POST',
@@ -18,20 +18,22 @@ const getSimilarArticle = () => {
                 'Content-Length': data.length
             }
         };
-        console.log('before sending request')
 
         var req = https.request(options, (res) => {
-            console.log('statusCode:', res.statusCode);
-            console.log('headers:', res.headers);
+            // console.log('statusCode:', res.statusCode);
+            // console.log('headers:', res.headers);
 
             res.on('data', (d) => {
-                process.stdout.write(d);
+                response += d.toString();
             });
+            res.on('close', () => {
+                resolve(JSON.parse(response).results[0]);
+            })
         });
         req.on('error', (e) => {
             console.error(e);
         });
-        req.write(data);
+        // req.write(data);
         req.end();
     });
 
@@ -40,3 +42,4 @@ const getSimilarArticle = () => {
 module.exports.handler = (event) => {
     return getSimilarArticle();
 }
+

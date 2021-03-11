@@ -23,7 +23,8 @@ def results():
 def webhook():
     # return response
     resp = make_response(jsonify({
-        "results": [
+        "results": [{
+            "data": "this is a response from csml flask api"}
         ],
         "info": {
             "seed": "d325d5cb9ed1151b",
