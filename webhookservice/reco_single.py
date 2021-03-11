@@ -52,6 +52,8 @@ class RecoArticle:
         self.utils = dict()
         self.embed_list = []
         self.lemonde_df = pd.read_csv("../lemonde_ready.csv")
+        self.tfidf_vectorizer = None
+        self.model = None
 
     def tokenize(self, text):
         lda_tokens = []
@@ -157,24 +159,23 @@ class RecoArticle:
 
     def load_models(self):
         spacy.load('fr_core_news_sm')
-
-        model = ft.load_model('../pipelines/cc.fr.300.bin')  # Pré-requis : installation de fasttext / cc.fr.300.bin
-        sample_df = pd.read_excel("../sample_articles.xlsx")  # one level above current folder
+        self.model = ft.load_model('../pipelines/cc.fr.300.bin')
         with open('../tfidf_vectorizer_base', 'rb') as handle:  # tfidf model
-            tfidf_vectorizer = pickle.load(handle)
+            self.tfidf_vectorizer = pickle.load(handle)
         for n in [4, 8, 12]:
             self.utils[n] = dict()
             self.utils[n]["embedding"] = np.loadtxt("../E_" + str(n) + "_leMonde_reduced.txt")
             self.utils[n]["std_scaler"] = load("../std_scaler_" + str(n) + ".joblib")
             self.utils[n]["pca"] = load("../pca_" + str(n) + ".joblib")
 
+    def compute_embeddings_from_sample(self):
+        sample_df = pd.read_excel("../sample_articles.xlsx")
         sample_df = self.preprocess(sample_df)
-
         for n in [4, 8, 12]:
             Std = self.utils[n]["std_scaler"]
             pca = self.utils[n]["pca"]
             # réduction de E_sample
-            E_sample_n = self.embed_top_n(sample_df, tfidf_vectorizer, n, model)
+            E_sample_n = self.embed_top_n(sample_df, self.tfidf_vectorizer, n, self.model)
             E_sample_n_df = pd.DataFrame(E_sample_n)  # transformation en DataFrame
             E_sample_n_df = Std.transform(E_sample_n_df)  # Standard scaling avant PCA
             E_sample_n_reduced = pca.transform(E_sample_n_df)
@@ -183,12 +184,46 @@ class RecoArticle:
             self.embed_list.append(E_sample_n_reduced)
             # Reco :  Sample articles + Archive articles
 
+    def compute_embeddings_from_parsed_article(self, data):
+        article_df = pd.DataFrame(columns=['title', 'text', 'url', 'year'])
+        article_df.loc[0] = [data['title'], data['text'], data['url'], data['date_published']]
+        article_df = self.preprocess(article_df)
+        for n in [4, 8, 12]:
+            Std = self.utils[n]["std_scaler"]
+            pca = self.utils[n]["pca"]
+            # réduction de E_sample
+            E_sample_n = self.embed_top_n(article_df, self.tfidf_vectorizer, n, self.model)
+            E_sample_n_df = pd.DataFrame(E_sample_n)  # transformation en DataFrame
+            E_sample_n_df = Std.transform(E_sample_n_df)  # Standard scaling avant PCA
+            E_sample_n_reduced = pca.transform(E_sample_n_df)
+            # back to numpy arrays
+            E_sample_n_reduced = np.array(E_sample_n_reduced)
+            self.embed_list.append(E_sample_n_reduced)
+            # Reco :  Sample articles + Archive articles
+
+
     def launch_reco_from_id(self, article_id, only_titles_needed=True):
         reco_set = set()
         titles_reco = []
         texts_reco = []
         for embed, n in zip(self.embed_list, [4, 8, 12]):
             i_closest = self.find_closest(embed[article_id, :], self.utils[n]["embedding"])
+            reco_set.add(i_closest)
+        for i_closest in reco_set:
+            titles_reco.append(self.lemonde_df.title[i_closest])
+            texts_reco.append(self.lemonde_df.text[i_closest][:])
+        if only_titles_needed:
+            return titles_reco
+        else:
+            return titles_reco, texts_reco
+
+
+    def launch_reco_from_parsed_article(self, only_titles_needed=True):
+        reco_set = set()
+        titles_reco = []
+        texts_reco = []
+        for embed, n in zip(self.embed_list, [4, 8, 12]):
+            i_closest = self.find_closest(embed[0, :], self.utils[n]["embedding"])
             reco_set.add(i_closest)
         for i_closest in reco_set:
             titles_reco.append(self.lemonde_df.title[i_closest])
