@@ -1,22 +1,24 @@
 const https = require('https');
 
+var querystring = require('querystring');
+
+
 async function getClosestString(event) {
     const {article_id, is_url} = event;
     let response = '';
     return new Promise((resolve, reject) => {
-        const data = JSON.stringify({
-            "article_id": article_id,
-            "is_url": is_url
-        })
+        var postData = querystring.stringify({
+            msg: 'hello world'
+        });
 
         var options = {
-            hostname: '80bf70e88f66.ngrok.io' ,
+            hostname: '80bf70e88f66.ngrok.io',
             port: 443,
             path: '/webhook',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': data.length
+                'Content-Length': postData.length
             }
         };
         var req = https.request(options, (res) => {
@@ -24,12 +26,14 @@ async function getClosestString(event) {
                 response += d.toString();
             });
             res.on('close', () => {
-                resolve(JSON.parse(response).results[0]);
+                console.log(response)
+                resolve(JSON.parse(response));
             })
         });
         req.on('error', (e) => {
             console.error(e);
         });
+        req.write(postData);
         req.end();
     });
 }
