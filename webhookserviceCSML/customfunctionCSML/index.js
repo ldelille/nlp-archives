@@ -4,18 +4,33 @@ async function getClosestString(event) {
     const {article_id, is_url} = event;
     let response = '';
     return new Promise((resolve, reject) => {
-        const req = https
-            .get('https://randomuser.me/api', (res) => {
-                res.on('data', (d) => {
-                    response += d.toString();
-                });
-                res.on('close', () => {
-                    resolve(JSON.parse(response).results[0]);
-                })
-            })
-            .on('error', (e) => {
-                reject(e);
+        const data = JSON.stringify({
+            "article_id": article_id,
+            "is_url": is_url
+        })
+
+        var options = {
+            hostname: '80bf70e88f66.ngrok.io' ,
+            port: 443,
+            path: '/webhook',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': data.length
+            }
+        };
+        var req = https.request(options, (res) => {
+            res.on('data', (d) => {
+                response += d.toString();
             });
+            res.on('close', () => {
+                resolve(JSON.parse(response).results[0]);
+            })
+        });
+        req.on('error', (e) => {
+            console.error(e);
+        });
+        req.end();
     });
 }
 

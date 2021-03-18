@@ -22,6 +22,7 @@ def results():
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
     # return response
+    print("article_id: ", request.args.get('article_id'))
     resp = make_response(jsonify({
         "results": [{
             "data": "this is a response from csml flask api"}
