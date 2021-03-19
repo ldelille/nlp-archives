@@ -77,6 +77,7 @@ __Recommandation scripts__
 
 * `reco_sim_fasttext_finetuned.py` : script to actually run the recommandation pipeline (v3)
 
+* `reco_sim_keyword.py` : variation of `reco_sim_fasttext_finetuned.py` in the case of a search by keyword. Also includes a new search by date functionnality. 
 
 __Webhook service__ CONTENT TO ADD
 
