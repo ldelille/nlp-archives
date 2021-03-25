@@ -1,18 +1,17 @@
 const https = require('https');
 
-var querystring = require('querystring');
-
 
 async function getClosestString(event) {
     const {article_id, is_url} = event;
     let response = '';
     return new Promise((resolve, reject) => {
-        var postData = querystring.stringify({
-            msg: 'hello world'
+        var postData = JSON.stringify({
+            'article_id': article_id,
+            'is_url': is_url
         });
 
         var options = {
-            hostname: '80bf70e88f66.ngrok.io',
+            hostname: '7d756bc9ef6f.ngrok.io',
             port: 443,
             path: '/webhook',
             method: 'POST',
