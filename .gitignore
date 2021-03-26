@@ -175,3 +175,19 @@ dmypy.json
 .DS_Store
 
 /webhookserviceCSML/.flaskenv
+/fasttext_finetuned_50K_120d.model
+/fasttext_finetuned_50K_120d.model.trainables.syn1neg.npy
+/fasttext_finetuned_50K_120d.model.trainables.vectors_vocab_lockf.npy
+/fasttext_finetuned_50K_120d.model.wv.vectors.npy
+/fasttext_finetuned_50K_120d.model.wv.vectors_vocab.npy
+/E_4_archives_reduced.txt
+/E_8_archives_reduced.txt
+/E_12_archives_reduced.txt
+/pca_50K_4.joblib
+/pca_50K_8.joblib
+/pca_50K_12.joblib
+/archives_ready.csv
+/std_scaler_50K_4.joblib
+/std_scaler_50K_8.joblib
+/std_scaler_50K_12.joblib
+/tfidf_vectorizer_50K
