@@ -191,3 +191,5 @@ dmypy.json
 /std_scaler_50K_8.joblib
 /std_scaler_50K_12.joblib
 /tfidf_vectorizer_50K
+/fasttext_finetuned_50K_120d.model.trainables.vectors_ngrams_lockf.npy
+/fasttext_finetuned_50K_120d.model.wv.vectors_ngrams.npy
