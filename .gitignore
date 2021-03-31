@@ -128,10 +128,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-/articles_LOC.csv
-/articles_PER.csv
-/articles_ORG.csv
-/articles_TIME.csv
+/entities_exctraction/articles_LOC.csv
+/entities_exctraction/articles_PER.csv
+/entities_exctraction/articles_ORG.csv
+/entities_exctraction/articles_TIME.csv
 
 .idea
 /pipelines/*.png
@@ -157,11 +157,11 @@ dmypy.json
 /reco_models/
 /pipelines/cc.fr.300.bin
 /pipelines/cc.fr.300.bin.gz
-/lemonde_ready.csv
+/recommendation_models/lemonde_ready.csv
 /recommendation_models/E_4_leMonde_reduced.txt
 /recommendation_models/E_8_leMonde_reduced.txt
 /recommendation_models/E_12_leMonde_reduced.txt
-/lemonde.csv
+/recommendation_models/lemonde.csv
 /recommendation_models/pca_4.joblib
 /recommendation_models/pca_8.joblib
 /recommendation_models/pca_12.joblib

@@ -51,7 +51,7 @@ print("Elapsed: ", (time.time()-start))
 
 print(lemonde_df.columns)
 """
-lemonde_df = pd.read_csv("recommendation_models/archives_ready.csv")
+lemonde_df = pd.read_csv("../recommendation_models/archives_ready.csv")
 
 ## 3 - Tfidf ##
 """
@@ -64,7 +64,7 @@ print(X.shape)
 # save the tfidf matrix
 pickle.dump(tfidf_vectorizer, open('tfidf_vectorizer_50K', 'wb'))
 """
-tfidf_vectorizer = pickle.load(open('recommendation_models/tfidf_vectorizer_50K', 'rb'))
+tfidf_vectorizer = pickle.load(open('../recommendation_models/tfidf_vectorizer_50K', 'rb'))
 
 ## 4 - Fine tuning de fasttext sur le corpus ##
 

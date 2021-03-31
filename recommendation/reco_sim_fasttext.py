@@ -129,11 +129,11 @@ def preprocess(news_df):
 
 start = time.time()
 
-model = ft.load_model('pipelines/cc.fr.300.bin')  # Pré-requis : installation de fasttext / cc.fr.300.bin
+model = ft.load_model('../pipelines/cc.fr.300.bin')  # Pré-requis : installation de fasttext / cc.fr.300.bin
 sample_df = pd.read_excel("sample_articles.xlsx")
-lemonde_df = pd.read_csv("recommendation_models/lemonde_ready.csv")  # one level above current folder
+lemonde_df = pd.read_csv("../recommendation_models/lemonde_ready.csv")  # one level above current folder
 
-with open('recommendation_models/tfidf_vectorizer_base', 'rb') as handle:  # tfidf model
+with open('../recommendation_models/tfidf_vectorizer_base', 'rb') as handle:  # tfidf model
     tfidf_vectorizer = pickle.load(handle)
 
 # preload reduced embeddings, standard scaler and PCA objects

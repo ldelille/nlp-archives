@@ -17,16 +17,16 @@ import pickle
 import numpy as np
 
 import time
-from text_preprocessing import preprocess 
+from pipelines.text_preprocessing import preprocess
 
 ### Load data and models ###
 
 model = ft.load_model('cc.fr.300.bin') # Loading model for French
 
-news_df = pd.read_csv("input_articles/articles.csv") # 726 news articles
+news_df = pd.read_csv("../input_articles/articles.csv") # 726 news articles
 sample_df=pd.read_excel("sample_articles.xlsx")
 
-with open('recommendation_models/tfidf_vectorizer_base', 'rb') as handle:
+with open('../recommendation_models/tfidf_vectorizer_base', 'rb') as handle:
     tfidf_vectorizer = pickle.load(handle)
 
 # tfidf model 
@@ -138,7 +138,7 @@ and stored in entry m * i + j - ((i + 2) * (i + 1)) // 2.
 
 ### Tests sur articles du Monde ###
 
-lemonde_df = pd.read_csv("recommendation_models/lemonde.csv")
+lemonde_df = pd.read_csv("../recommendation_models/lemonde.csv")
 
 start = time.time()
 lemonde_df = preprocess(lemonde_df)

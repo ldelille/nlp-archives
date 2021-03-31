@@ -131,9 +131,9 @@ start = time.time()
 model = FastText.load("fasttext_finetuned_50K_120d.model")  # finetuned fasttext embedding, 120d vectors
 
 sample_df = pd.read_excel("sample_articles.xlsx")
-lemonde_df = pd.read_csv("recommendation_models/archives_ready.csv")  # one level above current folder
+lemonde_df = pd.read_csv("../recommendation_models/archives_ready.csv")  # one level above current folder
 
-with open('recommendation_models/tfidf_vectorizer_50K', 'rb') as handle:  # tfidf model
+with open('../recommendation_models/tfidf_vectorizer_50K', 'rb') as handle:  # tfidf model
     tfidf_vectorizer = pickle.load(handle)
 
 # preload reduced embeddings, standard scaler and PCA objects

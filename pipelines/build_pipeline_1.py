@@ -27,8 +27,8 @@ from joblib import dump, load
 
 ## 1 - Fusion des Datasets Le Monde + Ouest France ##
 
-df1 = pd.read_csv("./articles.csv") # Ouest France 
-df2 = pd.read_csv("./lemonde.csv") # Le Monde
+df1 = pd.read_csv("../input_articles/articles.csv") # Ouest France
+df2 = pd.read_csv("../recommendation_models/lemonde.csv") # Le Monde
 print(df1.columns)
 print(df2.columns)
 print(len(df1))
@@ -61,7 +61,7 @@ X = tfidf_vectorizer.fit_transform(lemonde_df.clean_text) # X is a matrix
 print(tfidf_vectorizer.get_feature_names())
 print(X.shape)
 # save the tfidf matrix
-pickle.dump(tfidf_vectorizer, open('recommendation_models/tfidf_vectorizer_50K', 'wb'))
+pickle.dump(tfidf_vectorizer, open('../recommendation_models/tfidf_vectorizer_50K', 'wb'))
 
 ## 4 - Fine tuning de fasttext sur le corpus ##
 

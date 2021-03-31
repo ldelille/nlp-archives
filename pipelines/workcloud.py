@@ -6,7 +6,7 @@ from pipelines.preprocessing import ArticlePreprocessor
 
 #We can control the quality of our preprocessing by plotting a wordcloud.
 def main():
-    news_df = pd.read_csv("../articles.csv")
+    news_df = pd.read_csv("../input_articles/articles.csv")
     article_preprocessor = ArticlePreprocessor(news_df)
     article_preprocessor.fully_preprocess()
     # Join the different processed titles together.

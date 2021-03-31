@@ -133,9 +133,9 @@ sample_df = pd.DataFrame({'title':'', 'text' : sample_data['data'],
                           'year_min':sample_data['year_min'], 'year_max':sample_data['year_max']})
 #sample_df=pd.read_excel("sample_articles.xlsx")
 
-lemonde_df = pd.read_csv("recommendation_models/archives_ready.csv") # one level above current folder
+lemonde_df = pd.read_csv("../recommendation_models/archives_ready.csv") # one level above current folder
 
-with open('recommendation_models/tfidf_vectorizer_50K', 'rb') as handle: # tfidf model
+with open('../recommendation_models/tfidf_vectorizer_50K', 'rb') as handle: # tfidf model
     tfidf_vectorizer = pickle.load(handle)
 
 # preload reduced embeddings, standard scaler and PCA objects

@@ -77,7 +77,7 @@ class ArticlePreprocessor:
 
 
 def main():
-    news_df = pd.read_csv("../articles.csv")
+    news_df = pd.read_csv("../input_articles/articles.csv")
     article_preprocessor = ArticlePreprocessor(news_df)
     article_preprocessor.fully_preprocess()
 
