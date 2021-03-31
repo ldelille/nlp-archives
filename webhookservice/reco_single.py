@@ -247,8 +247,8 @@ class RecoArticle:
     #     else:
     #         return titles_reco, texts_reco
 
-if __name__ == '__main__':
-    test_article = RecoArticle()
-    test_article.load_models()
-    test_article.compute_embeddings_from_sample()
-    print(test_article.launch_reco_from_id(10))
+# if __name__ == '__main__':
+#     test_article = RecoArticle()
+#     test_article.load_models()
+#     test_article.compute_embeddings_from_sample()
+#     print(test_article.launch_reco_from_id(10))

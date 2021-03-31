@@ -23,7 +23,6 @@ def results():
     print(f"detected article number {article_number} as an input, launching reco...")
 
     # print(launch_spider(article_url))
-    test_article.embed_list = []
     print("test_article", test_article)
     print("result from function is ", test_article.launch_reco_from_id(int(article_number)))
     return {
