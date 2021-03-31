@@ -26,7 +26,7 @@ model = ft.load_model('cc.fr.300.bin') # Loading model for French
 news_df = pd.read_csv("./articles.csv") # 726 news articles
 sample_df=pd.read_excel("sample_articles.xlsx")
 
-with open('tfidf_vectorizer_base', 'rb') as handle:
+with open('recommendation_models/tfidf_vectorizer_base', 'rb') as handle:
     tfidf_vectorizer = pickle.load(handle)
 
 # tfidf model 

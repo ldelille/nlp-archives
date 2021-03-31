@@ -61,7 +61,7 @@ X = tfidf_vectorizer.fit_transform(lemonde_df.clean_text) # X is a matrix
 print(tfidf_vectorizer.get_feature_names())
 print(X.shape)
 # save the tfidf matrix
-pickle.dump(tfidf_vectorizer, open('tfidf_vectorizer_50K', 'wb'))
+pickle.dump(tfidf_vectorizer, open('recommendation_models/tfidf_vectorizer_50K', 'wb'))
 
 ## 4 - Fine tuning de fasttext sur le corpus ##
 
