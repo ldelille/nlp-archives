@@ -9,9 +9,8 @@ async function getClosestString(event) {
             'article_id': article_id,
             'is_url': is_url
         });
-
         var options = {
-            hostname: '7d756bc9ef6f.ngrok.io',
+            hostname: '58caef3a0c0a.ngrok.io',
             port: 443,
             path: '/webhook',
             method: 'POST',

@@ -18,7 +18,7 @@ from joblib import load
 
 import spacy
 from nltk.stem.snowball import FrenchStemmer
-
+from gensim.models.fasttext import FastText
 from spacy.lang.fr import French
 
 try:
@@ -51,7 +51,7 @@ class RecoArticle:
         self.stemmer = FrenchStemmer()
         self.utils = dict()
         self.embed_list = []
-        self.lemonde_df = pd.read_csv("../lemonde_ready.csv")
+        self.lemonde_df = pd.read_csv("../archives_ready.csv")
         self.tfidf_vectorizer = None
         self.model = None
 
@@ -146,9 +146,9 @@ class RecoArticle:
         # print(X_top_n[:5])
 
         # FastText Embedding
-        E = np.zeros((N, 300))
+        E = np.zeros((N, 120))
         for i in range(N):
-            E[i, :] = model.get_sentence_vector(X_top_n[i])
+            E[i,:]=model[X_top_n[i]]
 
         return E
 
@@ -159,14 +159,14 @@ class RecoArticle:
 
     def load_models(self):
         spacy.load('fr_core_news_sm')
-        self.model = ft.load_model('../pipelines/cc.fr.300.bin')
-        with open('../tfidf_vectorizer_base', 'rb') as handle:  # tfidf model
+        self.model = FastText.load("../fasttext_finetuned_50K_120d.model")
+        with open('../tfidf_vectorizer_50K', 'rb') as handle:  # tfidf model
             self.tfidf_vectorizer = pickle.load(handle)
         for n in [4, 8, 12]:
             self.utils[n] = dict()
-            self.utils[n]["embedding"] = np.loadtxt("../E_" + str(n) + "_leMonde_reduced.txt")
-            self.utils[n]["std_scaler"] = load("../std_scaler_" + str(n) + ".joblib")
-            self.utils[n]["pca"] = load("../pca_" + str(n) + ".joblib")
+            self.utils[n]["embedding"] = np.loadtxt(".././E_" + str(n) + "_archives_reduced.txt")
+            self.utils[n]["std_scaler"] = load("../std_scaler_50K_" + str(n) + ".joblib")
+            self.utils[n]["pca"] = load("../pca_50K_" + str(n) + ".joblib")
 
     def compute_embeddings_from_sample(self):
         sample_df = pd.read_excel("../sample_articles.xlsx")
@@ -201,7 +201,6 @@ class RecoArticle:
             self.embed_list.append(E_sample_n_reduced)
             # Reco :  Sample articles + Archive articles
 
-
     def launch_reco_from_id(self, article_id, only_titles_needed=True):
         reco_set = set()
         titles_reco = []
@@ -216,7 +215,6 @@ class RecoArticle:
             return titles_reco
         else:
             return titles_reco, texts_reco
-
 
     def launch_reco_from_parsed_article(self, only_titles_needed=True):
         reco_set = set()
@@ -249,8 +247,8 @@ class RecoArticle:
     #     else:
     #         return titles_reco, texts_reco
 
-# if __name__ == '__main__':
-#     test_article = RecoArticle()
-#     test_article.load_models()
-#     print(test_article.launch_reco_from_id(3))
-#     print(test_article.launch_reco_from_id(2))
+if __name__ == '__main__':
+    test_article = RecoArticle()
+    test_article.load_models()
+    test_article.compute_embeddings_from_sample()
+    print(test_article.launch_reco_from_id(10))

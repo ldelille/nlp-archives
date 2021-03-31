@@ -22,21 +22,13 @@ def results():
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
     # return response
-    print("article_id: ", request.args.get('article_id'))
+    req = request.get_json(force=True)
     resp = make_response(jsonify({
-        "results": [{
-            "data": "this is a response from csml flask api"}
-        ],
-        "info": {
-            "seed": "d325d5cb9ed1151b",
-            "results": 1,
-            "page": 1,
-            "version": "1.3"
-        }
+        "results": {
+            "data": "this is a response from csml flask api",
+            "article_id": req['article_id']}
     }))
-    resp.headers['content-type'] = 'application/json; charset=utf-8'
-    resp.headers['Access-Control-Allow-Origin'] = '*'
-    resp.headers['vary'] = 'Accept-Encoding'
+
     return resp
 
 

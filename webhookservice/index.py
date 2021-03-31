@@ -20,10 +20,12 @@ def results():
 
     article_number = req.get('queryResult').get('parameters').get('number-integer')
     article_url = req.get('queryResult').get('parameters').get('url')
-    print(f"detected article number{article_number} as an input, launching reco...")
+    print(f"detected article number {article_number} as an input, launching reco...")
 
     # print(launch_spider(article_url))
     test_article.embed_list = []
+    print("test_article", test_article)
+    print("result from function is ", test_article.launch_reco_from_id(int(article_number)))
     return {
         'fulfillmentText': 'Nous vous recommandons :' + test_article.launch_reco_from_id(int(article_number))[
             0] + ' à partir de l\'article ' + str(
@@ -36,11 +38,12 @@ def webhook():
     # return response
     return make_response(jsonify(results()))
 
+
 @app.route('/scraping', methods=['GET', 'POST'])
 def launch_scraping():
     req = request.get_json(force=True)
     article_url = req.get('queryResult').get('parameters').get('url')
-    print(f"detected article number{article_url} as an input, launching scraping...")
+    print(f"detected article with url {article_url} as an input, launching scraping...")
     test_article.embed_list = []
     params = {
         'spider_name': 'lemonde_single',
