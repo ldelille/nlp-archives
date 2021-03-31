@@ -5,9 +5,9 @@ import requests
 import json
 import pandas as pd
 
-app = Flask(__name__)
-
 from reco_single import RecoArticle
+
+app = Flask(__name__)
 
 
 @app.route('/')
