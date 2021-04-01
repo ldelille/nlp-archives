@@ -23,10 +23,10 @@ import spacy
 from nltk.stem.snowball import FrenchStemmer 
 stemmer = FrenchStemmer()
 
-spacy.load('fr')
 from spacy.lang.fr import French
 parser = French()
 
+nlp = spacy.load("fr_core_news_sm")
 
 try : 
     from nltk.corpus import stopwords
@@ -123,9 +123,9 @@ def preprocess(news_df):
 
 start = time.time()
 
-model = FastText.load("fasttext_finetuned_50K_120d.model") # finetuned fasttext embedding, 120d vectors
+model = FastText.load("../recommendation_models/fasttext_finetuned_50K_120d.model") # finetuned fasttext embedding, 120d vectors
 
-with open('test1.json') as json_file:
+with open('../test1.json') as json_file:
     sample_data = json.load(json_file)
 
 #sample_df = pd.DataFrame({'title':'', 'text' : sample_data['data'], 'year':2021})
@@ -142,9 +142,9 @@ with open('../recommendation_models/tfidf_vectorizer_50K', 'rb') as handle: # tf
 utils = dict()
 for n in [4, 8, 12]:
     utils[n]=dict()
-    utils[n]["embedding"] = np.loadtxt("./E_"+str(n)+"_archives_reduced.txt") 
-    utils[n]["std_scaler"] = load("std_scaler_50K_"+str(n)+".joblib")
-    utils[n]["pca"] =  load("pca_50K_"+str(n)+".joblib")     
+    utils[n]["embedding"] = np.loadtxt("../recommendation_models/./E_"+str(n)+"_archives_reduced.txt")
+    utils[n]["std_scaler"] = load("../recommendation_models/std_scaler_50K_"+str(n)+".joblib")
+    utils[n]["pca"] =  load("../recommendation_models/pca_50K_"+str(n)+".joblib")
 print("\n>>> Pre-loading  <<< Elapsed: ", (time.time()-start)) 
 
 
