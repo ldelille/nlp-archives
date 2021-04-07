@@ -8,6 +8,7 @@ Created on Wed Jan 20 18:07:39 2021
 ### Imports ###
 
 import pickle
+import random
 
 import numpy as np
 import pandas as pd
@@ -55,6 +56,7 @@ class RecoArticle:
         self.sample_df = None
         self.embed_list_from_keywords = []
         self.warn = []
+        self.keyword_df = None
 
     def tokenize(self, text):
         lda_tokens = []
@@ -217,6 +219,18 @@ class RecoArticle:
         i_closest = np.argmin(Dist)
         return i_closest
 
+    def find_closest_wDates(self, M1, M2, mask, metric='cosine'):
+        Dist = cdist(M1.reshape(1, -1), M2, metric=metric)
+        mask = mask.reshape(Dist.shape[0], -1)
+        Dist = mask + Dist
+        i_closest = np.argmin(Dist)
+        sim = 1 - np.ravel(Dist)[np.argmin(Dist)]
+        print("\nCosine similarity : %1.3f" % sim)
+        if sim < 0.75:
+            print(
+                "Changer les contraintes temporelles ou modifiez votre requête pour obtenir des articles plus similaires.")
+        return i_closest
+
     def load_models(self):
         spacy.load('fr_core_news_sm')
         self.model = FastText.load("../../recommendation_models/fasttext_finetuned_50K_120d.model")
@@ -264,22 +278,57 @@ class RecoArticle:
             self.embed_list_from_parsing.append(E_sample_n_reduced)
 
     def compute_embeddings_from_keywords(self, keys_data):
-        keyword_df = pd.DataFrame({'title': '', 'text': keys_data['data'],
+        self.keyword_df = pd.DataFrame({'title': '', 'text': keys_data['data'],
                                    'year_min': keys_data['year_min'], 'year_max': keys_data['year_max']})
-        keyword_df = self.preprocess(keyword_df, is_keyword=True)
+        self.keyword_df = self.preprocess(self.keyword_df, is_keyword=True)
         self.embed_list_from_keywords = []
+        result = []
         for n in [4, 8, 12]:
             # load embedding, standard scaler and PCA objects
             Std = self.utils[n]["std_scaler"]
             pca = self.utils[n]["pca"]
             # réduction de E_sample
-            E_sample_n, self.warn_n = self.embed_top_n_keywords(keyword_df, self.tfidf_vectorizer, n, self.model)
+            E_sample_n, self.warn_n = self.embed_top_n_keywords(self.keyword_df, self.tfidf_vectorizer, n, self.model)
             E_sample_n_df = pd.DataFrame(E_sample_n)  # transformation en DataFrame
             E_sample_n_df = Std.transform(E_sample_n_df)  # Standard scaling avant PCA
             E_sample_n_reduced = pca.transform(E_sample_n_df)
             # back to numpy arrays
             self.embed_list_from_keywords.append(E_sample_n_reduced)
             # Reco :  Sample articles + Archive articles
+                # mask for filtering by dates:
+            y_min, y_max = int(self.keyword_df.year_min[0]), int(self.keyword_df.year_max[0])
+            print("Contraintes temporelles : article daté entre %s et %s." % (y_min, y_max))
+            mask = np.array(self.lemonde_df['year'])
+            mask = 1 * (mask >= y_min) * (mask <= y_max)
+            if np.sum(mask) > 0:
+                print("Des articles d'archive correspondent aux contraintes temporelles fournies")
+                if self.warn_n[0] == True:
+                    self.warn_n[0].add(random.randrange(len(self.utils[n]["embedding"])))
+                else:
+                    i_closest = self.find_closest_wDates(E_sample_n_reduced[0, :], self.utils[n]["embedding"], mask)
+                    result.append(i_closest)
+            else:
+                print(
+                    "Les bornes temporelles fournies ne permettent pas d'obtenir de résultats. Annulation des contraintes.")
+                if self.warn_n[0] == True:
+                    result.append(random.randrange(len(self.utils[n]["embedding"])))
+                else:
+                    i_closest = self.find_closest(E_sample_n_reduced[0, :], self.utils[n]["embedding"])
+                    result.append(i_closest)
+            self.warn[0] = self.warn[0] & self.warn_n[0]
+            if self.warn[0]:
+                return {"result": "reco did not succeed"}
+            else:
+                res = {}
+                res["result"] = {}
+                for cpt, article in enumerate(result):
+                    res["result"]["article_" + str(cpt)]["title"] = self.lemonde_df.title[article][:]
+                    res["result"]["article_" + str(cpt)]["url"] = self.lemonde_df.title[article][:]
+                    res["result"]["article_" + str(cpt)]["url"] = self.lemonde_df.title[article][:]
+                return res
+
+
+
 
     def launch_reco_from_id(self, article_id):
         reco_list = []
@@ -319,28 +368,7 @@ class RecoArticle:
 
 
     def launch_reco_from_keyworsds(self):
-        for i0 in range(len(sample_df)):
-            # mask for filtering by dates:
-            y_min, y_max = int(sample_df.year_min[i0]), int(sample_df.year_max[i0])
-            print("Contraintes temporelles : article daté entre %s et %s." % (y_min, y_max))
-            mask = np.array(lemonde_df['year'])
-            mask = 1 * (mask >= y_min) * (mask <= y_max)
-            if np.sum(mask) > 0:
-                print("Des articles d'archive correspondent aux contraintes temporelles fournies")
-                if warn_n[i0] == True:
-                    reco_sets[i0].add(random.randrange(len(E_n_reduced)))
-                else:
-                    i_closest = find_closest_wDates(E_sample_n_reduced[i0, :], E_n_reduced, mask)
-                    reco_sets[i0].add(i_closest)
-            else:
-                print(
-                    "Les bornes temporelles fournies ne permettent pas d'obtenir de résultats. Annulation des contraintes.")
-                if warn_n[i0] == True:
-                    reco_sets[i0].add(random.randrange(len(E_n_reduced)))
-                else:
-                    i_closest = find_closest(E_sample_n_reduced[i0, :], E_n_reduced)
-                    reco_sets[i0].add(i_closest)
-            warn[i0] = warn[i0] & warn_n[i0]
+        pass
 
 
 if __name__ == '__main__':
