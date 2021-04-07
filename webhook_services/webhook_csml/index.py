@@ -26,7 +26,7 @@ def webhook():
     # return response
     req = request.get_json(force=True)
     if req['is_url'] == 'false':
-        res = test_article.launch_reco_from_id(int(req['article_id']))
+        res = test_article.launch_reco_from_id(int(req['article_id']) - 1)
     else:
         print(f"detected article with url {req['article_id']} as an input, launching scraping...")
         params = {
@@ -39,7 +39,7 @@ def webhook():
         res = test_article.launch_reco_from_parsed_article()
         res["input_article"] = {}
         res["input_article"]["title"] = data['items'][0]["title"]
-        res["input_article"]["url"] =  data['items'][0]["url"]
+        res["input_article"]["url"] = data['items'][0]["url"]
         res["input_article"]["date_published"] = data['items'][0]["date_published"]
     resp = make_response(jsonify(res))
     return resp
