@@ -298,6 +298,7 @@ for i0 in range(len(sample_df)):
               \nentreprise, croissance, emploi, soupçon, découverte, jeunesse, réforme,  ministre etc.")
     else : 
         print("\nRequête prise en compte avec succès. Voici nos propositions.")
+    print("reco sets", list(reco_sets[i0]))
     for i_closest in list(reco_sets[i0]):
         print("\n Reco --- ", lemonde_df.title[i_closest])
         print(lemonde_df.text[i_closest][:500])

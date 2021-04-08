@@ -4,9 +4,6 @@ from scrapy.loader import ItemLoader
 from ScrapingNews.items import NewsArticle
 
 
-# scrapy crawl lemonde - O ArticleLeMondeRun3 / europe.json - a keyword = asie - a depth = 300 - a year_min = 1990 - a year_max = 2000
-
-
 class LeMondeSpiderSingle(scrapy.Spider):
     name = "lemonde_single"
 
