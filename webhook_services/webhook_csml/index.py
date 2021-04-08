@@ -45,6 +45,17 @@ def webhook():
     return resp
 
 
+# route for reco from keywords
+@app.route('/keywords', methods=['GET', 'POST'])
+def keywords():
+    # return response
+    req = request.get_json(force=True)
+    print("req_type", type(req))
+    res = test_article.compute_embeddings_from_keywords(req)
+    resp = make_response(jsonify(res))
+    return resp
+
+
 if __name__ == "__main__":
     test_article = RecoArticle()
     test_article.load_models()
