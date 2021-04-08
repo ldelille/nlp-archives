@@ -279,31 +279,33 @@ class RecoArticle:
 
     def compute_embeddings_from_keywords(self, keys_data):
         self.keyword_df = pd.DataFrame({'title': '', 'text': keys_data['data'],
-                                   'year_min': keys_data['year_min'], 'year_max': keys_data['year_max']})
+                                        'year_min': keys_data['year_min'], 'year_max': keys_data['year_max']})
         self.keyword_df = self.preprocess(self.keyword_df, is_keyword=True)
         self.embed_list_from_keywords = []
         result = []
+        warn = True
         for n in [4, 8, 12]:
             # load embedding, standard scaler and PCA objects
             Std = self.utils[n]["std_scaler"]
             pca = self.utils[n]["pca"]
             # réduction de E_sample
             E_sample_n, self.warn_n = self.embed_top_n_keywords(self.keyword_df, self.tfidf_vectorizer, n, self.model)
+            print('self.warn_n', self.warn_n)
             E_sample_n_df = pd.DataFrame(E_sample_n)  # transformation en DataFrame
             E_sample_n_df = Std.transform(E_sample_n_df)  # Standard scaling avant PCA
             E_sample_n_reduced = pca.transform(E_sample_n_df)
             # back to numpy arrays
             self.embed_list_from_keywords.append(E_sample_n_reduced)
             # Reco :  Sample articles + Archive articles
-                # mask for filtering by dates:
+            # mask for filtering by dates:
             y_min, y_max = int(self.keyword_df.year_min[0]), int(self.keyword_df.year_max[0])
             print("Contraintes temporelles : article daté entre %s et %s." % (y_min, y_max))
             mask = np.array(self.lemonde_df['year'])
             mask = 1 * (mask >= y_min) * (mask <= y_max)
             if np.sum(mask) > 0:
                 print("Des articles d'archive correspondent aux contraintes temporelles fournies")
-                if self.warn_n[0] == True:
-                    self.warn_n[0].add(random.randrange(len(self.utils[n]["embedding"])))
+                if self.warn_n[0]:
+                    result.append(random.randrange(len(self.utils[n]["embedding"])))
                 else:
                     i_closest = self.find_closest_wDates(E_sample_n_reduced[0, :], self.utils[n]["embedding"], mask)
                     result.append(i_closest)
@@ -315,20 +317,18 @@ class RecoArticle:
                 else:
                     i_closest = self.find_closest(E_sample_n_reduced[0, :], self.utils[n]["embedding"])
                     result.append(i_closest)
-            self.warn[0] = self.warn[0] & self.warn_n[0]
-            if self.warn[0]:
-                return {"result": "reco did not succeed"}
-            else:
-                res = {}
-                res["result"] = {}
-                for cpt, article in enumerate(result):
-                    res["result"]["article_" + str(cpt)]["title"] = self.lemonde_df.title[article][:]
-                    res["result"]["article_" + str(cpt)]["url"] = self.lemonde_df.title[article][:]
-                    res["result"]["article_" + str(cpt)]["url"] = self.lemonde_df.title[article][:]
-                return res
-
-
-
+        if self.warn_n[0]:
+            return {"result": "reco did not succeed"}
+        else:
+            res = {}
+            res["result"] = {}
+            print('result', result)
+            for cpt, article in enumerate(result):
+                res["result"]["article_" + str(cpt)] = {}
+                res["result"]["article_" + str(cpt)]["title"] = self.lemonde_df.title[article][:]
+                # res["result"]["article_" + str(cpt)]["text"] = self.lemonde_df.text[article][:]
+                res["result"]["article_" + str(cpt)]["url"] = self.lemonde_df.url[article][:]
+            return res
 
     def launch_reco_from_id(self, article_id):
         reco_list = []
@@ -366,7 +366,6 @@ class RecoArticle:
             res["result"]["article_" + str(cpt)]["url"] = self.lemonde_df.url[i_closest][:]
         return res
 
-
     def launch_reco_from_keyworsds(self):
         pass
 
@@ -375,4 +374,13 @@ if __name__ == '__main__':
     test_article = RecoArticle()
     test_article.load_models()
     test_article.compute_embeddings_from_sample()
-    print(test_article.launch_reco_from_id(10))
+    test_keywords = {
+        "data": [
+            "régions France parcs naturels"],
+        "year_min": [1950],
+        "year_max": [1950]
+    }
+    test_article.compute_embeddings_from_keywords(test_keywords)
+    print(test_article.compute_embeddings_from_keywords(test_keywords))
+
+    # print(test_article.launch_reco_from_id(10))
