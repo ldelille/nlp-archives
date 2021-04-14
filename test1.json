@@ -1,0 +1,10 @@
+{
+    "data":[
+        "régions France parcs naturels", 
+        "révolution internet", 
+        "jeunes recherche d'emploi", 
+        "Europe crise politique", 
+        "Chine mondialisation"],
+    "year_min":[1950, 1970, 1800, 1980, 1970],
+    "year_max":[1950, 2021, 1988, 1990, 1990]
+}

@@ -25,6 +25,7 @@ def results():
 def webhook():
     # return response
     req = request.get_json(force=True)
+    print('res is url', req['is_url']  )
     if req['is_url'] == 'false':
         res = test_article.launch_reco_from_id(int(req['article_id']) - 1)
     else:
@@ -35,6 +36,7 @@ def webhook():
         }
         response = requests.get('http://localhost:9080/crawl.json', params)
         data = json.loads(response.text)
+        print('data received from scraping', data)
         test_article.compute_embeddings_from_parsed_article(data['items'][0])
         res = test_article.launch_reco_from_parsed_article()
         res["input_article"] = {}
@@ -48,9 +50,8 @@ def webhook():
 # route for reco from keywords
 @app.route('/keywords', methods=['GET', 'POST'])
 def keywords():
-    # return response
     req = request.get_json(force=True)
-    print("req_type", type(req))
+    req['data'] = ' '.join(req['data']) # unify keywords
     res = test_article.compute_embeddings_from_keywords(req)
     resp = make_response(jsonify(res))
     return resp

@@ -222,9 +222,9 @@ class RecoArticle:
     def find_closest_wDates(self, M1, M2, mask, metric='cosine'):
         Dist = cdist(M1.reshape(1, -1), M2, metric=metric)
         mask = mask.reshape(Dist.shape[0], -1)
-        Dist = mask + Dist
-        i_closest = np.argmin(Dist)
-        sim = 1 - np.ravel(Dist)[np.argmin(Dist)]
+        Sim = (np.ones(mask.shape) - Dist) * mask  # 0 if date is not eligible, else similarity
+        i_closest = np.argmax(Sim)
+        sim = np.ravel(Sim)[i_closest]
         print("\nCosine similarity : %1.3f" % sim)
         if sim < 0.75:
             print(
@@ -324,10 +324,12 @@ class RecoArticle:
             res["result"] = {}
             print('result', result)
             for cpt, article in enumerate(result):
+                print("i closet", article, cpt)
                 res["result"]["article_" + str(cpt)] = {}
                 res["result"]["article_" + str(cpt)]["title"] = self.lemonde_df.title[article][:]
-                # res["result"]["article_" + str(cpt)]["text"] = self.lemonde_df.text[article][:]
                 res["result"]["article_" + str(cpt)]["url"] = self.lemonde_df.url[article][:]
+
+                # res["result"]["article_" + str(cpt)]["date_published"] = str(self.lemonde_df.date_published[article][:])
             return res
 
     def launch_reco_from_id(self, article_id):
@@ -361,8 +363,9 @@ class RecoArticle:
         for cpt, i_closest in enumerate(reco_list):
             res["result"]["article_" + str(cpt)] = {}
             res["result"]["article_" + str(cpt)]["text"] = self.lemonde_df.text[i_closest][:]
+            print("i closet", i_closest)
             res["result"]["article_" + str(cpt)]["title"] = self.lemonde_df.title[i_closest][:]
-            res["result"]["article_" + str(cpt)]["date_published"] = self.lemonde_df.date_published[i_closest][:]
+            res["result"]["article_" + str(cpt)]["date_published"] = str(self.lemonde_df.date_published[i_closest][:])
             res["result"]["article_" + str(cpt)]["url"] = self.lemonde_df.url[i_closest][:]
         return res
 
@@ -376,9 +379,9 @@ if __name__ == '__main__':
     test_article.compute_embeddings_from_sample()
     test_keywords = {
         "data": [
-            "régions France parcs naturels"],
+            "Europe crise politique"],
         "year_min": [1950],
-        "year_max": [1950]
+        "year_max": [1960]
     }
     test_article.compute_embeddings_from_keywords(test_keywords)
     print(test_article.compute_embeddings_from_keywords(test_keywords))
