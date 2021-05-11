@@ -15,11 +15,6 @@ from reco_single import RecoArticle
 def index():
     return render_template('index.html')
 
-
-def results():
-    print('received a post')
-
-
 # route for webhook
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
