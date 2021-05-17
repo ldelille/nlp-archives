@@ -1,10 +1,7 @@
-import flask
+
 from flask import Flask, request, jsonify, render_template, make_response
-import os
-import dialogflow
 import requests
 import json
-import pandas as pd
 
 app = Flask(__name__)
 
