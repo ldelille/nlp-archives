@@ -213,9 +213,6 @@ def find_closest(M1, M2, metric='cosine'):
 
 start = time.time()
 
-print("\n\n\n>>> Test Reco / PCA / n = 4, 8, 12 <<<\n\n")
-
-start = time.time()
 reco_sets = [set() for k in range(len(sample_df))]
 
 for n in [4, 8, 12]:
