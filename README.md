@@ -9,12 +9,12 @@ similarities with recent articles. Finding **similarities between recent article
 purpose of this repository. Articles recommendations based on semantic similarities and topic recognition.
 
 
-To enhance our models we recovered some articles from the archives using scraping. The associated code has been move to 
-a dedicated repository. 
+To enhance our models we recovered some articles from the archives using scraping. 
 
 We develop a chatbot that provides live recommendation from articles. The chatbot parse the article that the user is reading, 
 launch similarity computing and propose similar articles from the archives. The associated code has also been move to 
-a dedicated repository. 
+a dedicated repository: [chatbot](https://github.com/ldelille/chatbot-newspaper) 
+
 
 
 ### Contents of this repository
