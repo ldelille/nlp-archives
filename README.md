@@ -5,15 +5,17 @@
 ## Purpose of the project
 
 Starting from **articles from the archives** of a French newspaper, we **build different machine learning models** to compute 
-similarities with recent articles. Finding **similarities between recent articles and articles from the archives** is the 
+similarities with recent articles.
+
+Finding **similarities between recent articles and articles from the archives** is the 
 purpose of this repository. Articles recommendations based on semantic similarities and topic recognition.
 
 
 To enhance our models we recovered some articles from the archives using scraping. 
 
-We develop a chatbot that provides live recommendation from articles. The chatbot parse the article that the user is reading, 
-launch similarity computing and propose similar articles from the archives. The associated code has also been move to 
-a dedicated repository: [chatbot](https://github.com/ldelille/chatbot-newspaper) 
+We develop a **chatbot** that provides live recommendation from articles. The chatbot parse the article that the user is reading, 
+**launch similarity computing** and propose **similar articles from the archives**.
+The associated code has also been move to a dedicated repository: [chatbot](https://github.com/ldelille/chatbot-newspaper) 
 
 
 
