@@ -39,6 +39,10 @@ We started by exploring our dataset with notebooks. Here is the detail:
 
 * `01_DataExploration.ipynb`: exploratory analysis of the Ouest France corpus. Contains key statistics, wordcloud visualisations, first NER extractions, LDA.
 
+![img_2.png](worldcloud.png)
+
+![img_1.png](time_repartition.png)
+
 * `02_GeoParsing.ipynb` : development of a strategy to extract, classify and compare articles based on their GEO entities. Equivalent to the scripts contained in folder `geoparsing`. 
 
 * `02_GeoParsing_applied.ipynb` : application of this strategy.
@@ -77,11 +81,15 @@ __Recommandation scripts__
 
 * `sim_fasttest.py` : script to train and save embeddings and models for the recommandation pipeline (build pipeline v1: tfidf learned on Ouest France articles, reco on Le Monde articles, pretrained fasttext embedding 300d)
 
+![img.png](base_tfidf.png)
+
 * `build_pipeline_1.py`: v2 --> tfidf learnt on Le Monde + Ouest France articles, reco Le Monde + Ouest France articles
 
 * `reco_sim_fasttext.py` : script to actually run the recommandation pipeline (v2)
 
 * `build_pipeline_1bis.py`: v3 --> finetuning of fasttext embedding on Le Monde + Ouest France articles
+
+![img.png](embeddings_fast_text.png)
 
 * `reco_sim_fasttext_finetuned.py` : script to actually run the recommandation pipeline (v3)
 
