@@ -1,8 +1,20 @@
 # NewsBacklight
 
-This NLP project aims at shedding a new light on present events by analysing newspaper articles from the past.
 
-We develop a chatbot that provides newspaper readers with archive articles recommendations based on semantic similarities and topic recognition.
+
+## Purpose of the project
+
+Starting from **articles from the archives** of a French newspaper, we **build different machine learning models** to compute 
+similarities with recent articles. Finding **similarities between recent articles and articles from the archives** is the 
+purpose of this repository. Articles recommendations based on semantic similarities and topic recognition.
+
+
+To enhance our models we recovered some articles from the archives using scraping. The associated code has been move to 
+a dedicated repository. 
+
+We develop a chatbot that provides live recommendation from articles. The chatbot parse the article that the user is reading, 
+launch similarity computing and propose similar articles from the archives. The associated code has also been move to 
+a dedicated repository. 
 
 
 ### Contents of this repository
@@ -15,17 +27,13 @@ __Quickstart__
 
 __Data__
 
-`InputArticles` folder : each subfolder corresponds to a year and contains press articles as json files. Articles were published in French newspaper *Ouest France* during the second half of the 20th century. 
+`InputArticles` folder : each subfolder corresponds to a year and contains press articles as json files. 
+Articles were published in French newspaper *Ouest France* during the second half of the 20th century. 
 
-* `articles.csv` : articles with meta data in csv format, built from the `InputArticles` folder. Total number of articles is 726.
-
-* `articles_labeled.xlsx` : manual labels for geography and topic.
-
-* `labeled_articles_clean.csv` : with columns containing preprocessed text (article title and body).
-
-* `sample_articles.xlsx` : sample data from 2020 to test the recommandation engine.
 
 __Notebooks__
+
+We started by exploring our dataset with notebooks. Here is the detail:
 
 * `00_BuildDataset.ipynb` : build `articles.csv` from the original json files.
 
@@ -79,11 +87,7 @@ __Recommandation scripts__
 
 * `reco_sim_keyword.py` : variation of `reco_sim_fasttext_finetuned.py` in the case of a search by keyword. Also includes a new search by date functionnality. 
 
-__Webhook service__ CONTENT TO ADD
 
-* `webhookservice` folder
-
-* `webhookserviceCSML` folder
 
 
 
